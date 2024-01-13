@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function App() {
   return (
@@ -17,11 +17,11 @@ function Box() {
   const place = data && !data?.error ? data.location?.name : 'unknown';
 
   async function handleInput(value) {
+    setInput(value);
+
     fetchSuggestions(value).then((hints) => {
       setHints(hints);
-      setInput(value);
     });
-
   }
 
   async function handleClick(placeId) {
@@ -93,14 +93,14 @@ function InfoBar({ temperature, icon, sunrise, sunset }) {
 function SunlightPeriodBar({ sunrise, sunset }) {
   return (<div className='sunlightPeriod'>
     <div className='sunrise'>
-      <img src="../assets/images/sunrise.svg"  style={{width:85, heigth:85}}  alt="Sunrise"></img>
+      <img src="../assets/images/sunrise.svg" style={{ width: 85, heigth: 85 }} alt="Sunrise"></img>
       <div>
         {sunrise}
       </div>
     </div>
     <div className='sunset'></div>
     <div className='sunset'>
-      <img src="../assets/images/sunset.svg" style={{width:85, heigth:85}} alt="Sunset"></img>
+      <img src="../assets/images/sunset.svg" style={{ width: 85, heigth: 85 }} alt="Sunset"></img>
       <div>
         {sunset}
       </div>
