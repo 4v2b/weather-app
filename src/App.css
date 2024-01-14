@@ -1,38 +1,94 @@
-.App {
+.app{
+  width: 300px;
+  padding: 10px;
+  border-radius: 10px;
   text-align: center;
+  background-color: #FBF9F1;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.inputField , .list-container {
+  position: relative;
+  width: 200px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.inputField{
+  border-radius: 5px;
+  border: none;
+  border: 2px #92C7CF solid;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.inputField:active{
+  border: 2px #AAD7D9 solid;
+}
+
+.hintList{
+  padding: 0;
+  margin-top: 5px;
+  border-radius: 10px;
+  position: absolute;
+  background-color: #AAD7D9;
+  list-style-type: none;
+}
+
+.hint {
+  background-color: #AAD7D9;
+  margin: 5px;
+  width: 190px;
+  display: block;
+  border: none;
+}
+
+.hint:hover{
+  border-radius: 5px;
+  background-color: #92C7CF ;
+}
+
+.searchBar{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.temperature{
+  font-size: 32px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.status{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
+
+.sunlight-period{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.sun-img{
+  height: 40px;
+  width: 40px;
+}
+
+.sunset{
+  margin-left: 15px;
+}
+
+.sunrise{
+  margin-right: 15px;
+}
+
+.sun-label{
+  font-size: 14px;
+}
+
+.title{
+  font-size: 28px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
