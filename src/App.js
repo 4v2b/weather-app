@@ -12,9 +12,10 @@ export default function App() {
 
 function Box() {
   const [input, setInput] = useState('');
-  const [data, setData] = useState(null);
+  const [forecast, setForecast] = useState(null);
   const [hints, setHints] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentWeather, setCurrentWeather] = useState(null);
 
   async function handleInput(value) {
     setInput(value);
@@ -29,39 +30,62 @@ function Box() {
     setInput("");
     setIsLoading(true);
 
-    fetchForecast(placeId).then((data) => {
-      if (!data?.error) {
-        setData(data);
+    fetchForecast(placeId).then((forecast) => {
+      if (!forecast?.error) {
+        setForecast(forecast);
         setIsLoading(false);
       }
     });
   }
 
+  function handlePreviewClick(index){
+    setCurrentWeather(forecast.forecast.forecastday[index]);
+  }
+
   let infoBar = <></>;
+  let previews = <></>;
 
-  if (data && !data?.error) {
+  if (forecast && !forecast?.error) {
 
-    const basePath = "../assets/images/weather/64x64/";
-    const partialPath = data.current.condition.icon.match(/((night|day)\/(\d)+.png)/i)[0];
+    const infoBarIcon = getWeatherImagePath(forecast.current.condition.icon);
 
-    const icon = basePath + partialPath;
+    previews = forecast.forecast.forecastday?.map((element, index ) => {
+      const previewIcon = getWeatherImagePath(element.day.condition.icon);
+      return <Preview key={index} index={index} onPreviewClick={handlePreviewClick} dateString={element.date} imgPath={previewIcon} maxTemperature={element.day.maxtemp_c} minTemperature={element.day.mintemp_c} />
+    });
 
-    infoBar = <InfoBar temperature={data.current.temp_c} icon={icon} />
+    infoBar = <InfoBar temperature={forecast.current.temp_c} icon={infoBarIcon} />
   }
 
   return (<>
     <SearchBar input={input} hints={hints} onInputChange={handleInput} onHintClick={handleClick} />
 
     <div className='title'>
-      {data && !data?.error ? "Weather in " + data.location?.name : 'Enter the name of some place'}
+      {forecast && !forecast?.error ? "Weather in " + forecast.location?.name : 'Enter the name of some place'}
     </div>
     <div>
       {isLoading ? <Loading /> : infoBar}
     </div>
-    <div className='forecast-preview'>
-
+    <div className='previews'>
+    {previews}
     </div>
   </>);
+}
+
+function Preview({ dateString ,imgPath, maxTemperature, minTemperature, onPreviewClick, index}){
+
+  const date = new Date(dateString);
+
+  const displayDate = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]
+  
+  return <div className='preview' onClick={()=>onPreviewClick(index)}>
+    <div className='preview-date' >{displayDate}</div>
+    <img className="preview-weather" alt="Weather" src={imgPath}/>
+    <div className='preview-temperature'>
+      <span className='max'>{Math.round(maxTemperature) +  "\u00B0"}</span>
+      <span className='min'>{Math.round(minTemperature)+ "\u00B0"}</span>
+    </div>
+  </div>
 }
 
 function SearchBar({ input, hints, onInputChange, onHintClick }) {
@@ -116,6 +140,12 @@ function SunlightPeriodBar({ sunrise, sunset }) {
   </div>);
 }
 
+function getWeatherImagePath(pathSnippet){
+  const basePath = "../assets/images/weather/64x64/";
+  const partialPath = pathSnippet.match(/((night|day)\/(\d)+.png)/i)[0];
+  return basePath + partialPath;
+}
+
 async function fetchSuggestions(input) {
   const key = "d26e8139afe0475ca10185046241001";
   const response = fetch(`https://api.weatherapi.com/v1/search.json?key=${key}&q=${input}`, {
@@ -151,26 +181,3 @@ async function fetchForecast(placeId, lang = 'en', days = 3) {
   return forecast;
 
 }
-
-// async function fetchAll(placeId, lang = 'eu') {
-//   const weather = await fetchWeather(placeId, lang);
-//   weather.astro = await fetchAstro(placeId).then(data => data.astronomy.astro);
-//   return weather;
-// }
-
-// async function fetchAstro(placeId) {
-//   const key = "d26e8139afe0475ca10185046241001";
-//   const response = fetch(`https://api.weatherapi.com/v1/astronomy.json?key=${key}&q=id:${placeId}`, {
-//     referrerPolicy: "strict-origin-when-cross-origin",
-//     method: 'GET',
-//     headers: {
-//       "Content-Type": "application/json"
-//     }
-//   });
-
-//   const astro = response.then((result) => result.json())
-//     .catch((error) => console.log(error))
-//     .then(data => data);
-
-//   return astro;
-// }
