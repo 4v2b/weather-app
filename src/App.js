@@ -16,7 +16,7 @@ function Box() {
   const [forecast, setForecast] = useState(null);
   const [hints, setHints] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [daysWeather, setDaysWeather] = useState(null);
+  const [forecastDay, setForecastDay] = useState(null);
 
   async function handleInput(value) {
     setInput(value);
@@ -35,13 +35,13 @@ function Box() {
       if (!forecast?.error) {
         setForecast(forecast);
         setIsLoading(false);
-        setDaysWeather(forecast.forecast.forecastday[0]);
+        setForecastDay(forecast.forecast.forecastday[0]);
       }
     });
   }
 
   function handlePreviewClick(index) {
-    setDaysWeather(forecast.forecast.forecastday[index]);
+    setForecastDay(forecast.forecast.forecastday[index]);
   }
 
   let infoBar = <></>;
@@ -54,7 +54,7 @@ function Box() {
       return <Preview key={index} index={index} onPreviewClick={handlePreviewClick} dateString={element.date} imgPath={previewIcon} maxTemperature={element.day.maxtemp_c} minTemperature={element.day.mintemp_c} />
     });
 
-    infoBar = <InfoBar weather={daysWeather} />
+    infoBar = <InfoBar forecastDay={forecastDay} />
   }
 
   return (<>
@@ -110,44 +110,37 @@ function SearchBar({ input, hints, onInputChange, onHintClick }) {
   </div>);
 }
 
-function InfoBar({ weather }) {
-  const [time, setTime] = useState("12");
-  const [hourWeather, setHourWeather] = useState(null);
+function InfoBar({ forecastDay }) {
+  const [hourForecast, setHourForecast] = useState(null);
 
-  //console.log(hourWeather);
+  const icon = hourForecast ? getWeatherImagePath(hourForecast.condition.icon) : "../assets/images/no_weather.png";
 
-  //console.log(weather);
+  function handleSliderChange(event) {
+    const hour = event.target.value === '' ? -1 : Number(event.target.value);
 
-  // !!! Rerender overflow
+    if (hour === -1) {
+      return;
+    }
 
-  // for(let hour of weather.hour) {
-  //   //console.log(hour);
-  //   if(hour.time.match(/\b(\d{2}):(\d{2})\b/)[1] == time){
-  //     setHourWeather(hour);
-  //     break;
-  //   }
-  // }
-
-  const icon = hourWeather ? getWeatherImagePath(hourWeather.condition.icon) : "";
-
-  function handleSliderChange(event){
-    setTime(event.target.value === '' ? 0 : Number(event.target.value));
+    for (let item of forecastDay.hour) {
+      if (item.time.match(/\b(\d{2}):(\d{2})\b/)[1] == hour) {
+        setHourForecast(item);
+        break;
+      }
+    }
   }
 
-  console.log(icon);
-  console.log(hourWeather?.temp_c);
-
   return (<>
-    <CurrentStatus weatherImg={icon} temperature={hourWeather?.temp_c} />
+    <CurrentStatus weatherImg={icon} temperature={hourForecast?.temp_c} />
     {/* <SunlightPeriodBar sunrise={sunrise} sunset={sunset} /> */}
-    <Slider valueLabelDisplay="auto" min={1} max={24} marks defaultValue={12} onChange={handleSliderChange} />
+    <Slider valueLabelDisplay="auto" min={0} max={23} marks defaultValue={12} onChange={handleSliderChange} />
   </>);
 }
 
 function CurrentStatus({ weatherImg, temperature }) {
   return (<div className='status'>
 
-    <img src={weatherImg} alt="Current weather" ></img>
+    <img className='current-weather-image' src={weatherImg} alt="Current weather" ></img>
     <span className='temperature'>{temperature + "\u00B0C"}</span>
 
   </div>);
