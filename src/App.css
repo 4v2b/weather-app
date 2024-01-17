@@ -5,6 +5,11 @@
   
 }
 
+.current-weather-image{
+  width: 64px;
+  height: 64px;
+}
+
 .app{
   min-width: 300px;
   padding: 10px;
