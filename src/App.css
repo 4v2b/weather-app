@@ -1,3 +1,10 @@
+:root{
+  --primary-dark: #92C7CF;
+  --primary-light:#AAD7D9;
+  --secondary-light:#FBF9F1;
+  
+}
+
 .app{
   min-width: 300px;
   padding: 10px;
