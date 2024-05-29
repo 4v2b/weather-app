@@ -111,7 +111,7 @@
 .preview{
   cursor: pointer;
   border-radius: 5px;
-  border: 2px solid black;
+  border: 2px solid var(--primary-light);
   margin:10px;
   padding: 5px 10px 5px 10px;
 }
