@@ -37,6 +37,8 @@ export default function Box() {
     function handlePreviewClick(index) {
       setForecastDay(forecast.forecast.forecastday[index]);
     }
+
+    console.log(forecast);
   
     let infoBar = <></>;
     let previews = <></>;
@@ -48,7 +50,13 @@ export default function Box() {
         return <Preview key={index} index={index} onPreviewClick={handlePreviewClick} dateString={element.date} imgPath={previewIcon} maxTemperature={element.day.maxtemp_c} minTemperature={element.day.mintemp_c} />
       });
   
-      infoBar = <InfoBar forecastDay={forecastDay} />
+      const current = {
+        temp_c : forecast.current.temp_c,
+        icon : forecast.current.condition.icon,
+        last_upd : forecast.current.last_updated
+      }
+
+      infoBar = <InfoBar forecastDay={forecastDay} current={current} />
     }
   
     return (<>
